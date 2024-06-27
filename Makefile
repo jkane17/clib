@@ -1,24 +1,9 @@
 
-# OS specific commnads
-ifeq ($(OS),Windows_NT)
-	ifeq ($(shell uname -s),)
-		CLEAN = del /S /F /Q
-		MKDIR = mkdir
-	else
-		CLEAN = rm -rf
-		MKDIR = mkdir -p
-	endif
-		TARGET_EXTENSION=exe
-	else
-		CLEAN = rm -rf
-		MKDIR = mkdir -p
-		TARGET_EXTENSION=out
-endif
+CLEAN = rm -rf
+MKDIR = mkdir -p
+TARGET_EXTENSION=out
 
-export MKDIR
-export TARGET_EXTENSION
-
-.PHONY: build test clean
+.PHONY: build test install uninstall clean
 
 # Paths
 PATH_INCLUDE = include/
@@ -37,7 +22,13 @@ DIRS_SRC = $(shell find $(PATH_SRC) -mindepth 1 -maxdepth 1 -type d -exec basena
 FILES_SRC = $(shell find $(PATH_SRC) -type f -name *.c)
 FILES_INCLUDE = $(shell find $(PATH_INCLUDE) -type f -name *.h)
 
-SO_FILE = $(PATH_OBJECTS)libclib.so
+SO_NAME = libclib.so
+SO_FILE = $(PATH_OBJECTS)$(SO_NAME)
+
+# Install values
+INSTALL_PREFIX = /usr/local/
+INSTALL_INCLUDE_DIR = $(INSTALL_PREFIX)include/clib/
+INSTALL_LIB_DIR = $(INSTALL_PREFIX)lib/
 
 # Compiler
 CC = gcc
@@ -47,6 +38,8 @@ INCLUDE_FLAGS = -I$(PATH_INCLUDE) $(foreach dir,$(DIRS_SRC),-I$(PATH_INCLUDE)$(d
 
 BREAK = "\n--------------------------------------------------\n"
 
+export MKDIR
+export TARGET_EXTENSION
 export PATH_TEST
 export PATH_OBJECTS
 export PATH_RESULTS
@@ -67,6 +60,16 @@ build: $(PATH_OBJECTS) $(FILES_SRC) $(FILES_INCLUDE)
 # Unit tests
 test: build
 	$(MAKE) -f $(PATH_TEST)Makefile
+
+install: build
+	install -d $(INSTALL_INCLUDE_DIR)
+	install -d $(INSTALL_LIB_DIR)
+	install -m 644 $(FILES_INCLUDE) $(INSTALL_INCLUDE_DIR)
+	install -m 755 $(SO_FILE) $(INSTALL_LIB_DIR)
+
+uninstall:
+	rm -rf $(INSTALL_INCLUDE_DIR)
+	rm -f $(INSTALL_LIB_DIR)$(SO_NAME)
 
 # Create build directories
 $(PATH_BUILD):

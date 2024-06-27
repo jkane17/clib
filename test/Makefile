@@ -13,9 +13,9 @@ RESULTS = $(patsubst $(PATH_TEST)%.c,$(_PATH_RESULTS)%.txt,$(FILES))
 
 _INCLUDE_FLAGS = $(INCLUDE_FLAGS) -I$(PATH_UNITY)
 
-PASSED = `find $(_PATH_RESULTS) -type f -name "*.txt" -exec grep -sh "PASS" {} +`
-FAIL = `find $(_PATH_RESULTS) -type f -name "*.txt" -exec grep -sh "FAIL" {} +`
-IGNORE = `find $(_PATH_RESULTS) -type f -name "*.txt" -exec grep -sh "IGNORE" {} +`
+PASSED = `GREP_COLOR="1;32" find $(_PATH_RESULTS) -type f -name "*.txt" -exec grep -sh --color=always "PASS" {} +`
+FAIL = `GREP_COLOR="1;31" find $(_PATH_RESULTS) -type f -name "*.txt" -exec grep -sh --color=always "FAIL" {} +`
+IGNORE = `GREP_COLOR="1;33" find $(_PATH_RESULTS) -type f -name "*.txt" -exec grep -sh --color=always "IGNORE" {} +`
 
 run: $(_PATH_RESULTS) $(_PATH_OBJECTS) $(_PATH_EXECUTABLES) $(RESULTS)
 	@echo "-----------------------\nIGNORES:\n-----------------------"
