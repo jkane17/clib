@@ -12,13 +12,12 @@
 #include "mem.h"
 
 /**
- * @brief Join two strings together. Allocates space for a string that the user 
- * must free. 
+ * @brief Join two strings together. Allocates space for a string that the user must free. 
  * 
- * @param s1 : Left string
- * @param s2 : Right String
- * @return char* : Joined string
+ * @param l Left string.
+ * @param r Right String.
+ * @return Joined string.
  */
-char *str_join(char *s1, char *s2);
+char *str_join(char *l, char *r);
 
 #endif

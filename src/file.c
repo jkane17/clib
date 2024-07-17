@@ -14,26 +14,22 @@ FILE *file_open(const char *path, const char *modes) {
 
 char *file_read(char *path) {
     FILE *f = file_open(path, "r");
-    
-    size_t buffSize = 0, textLen = 0, textSize = BUFF_SIZE;
+
+    AllocBlock *block = alloc_new(BUFF_SIZE, ALLOC_STRAT_BUDDY);
+    size_t buffSize = 0;
     int lineLen = 0;
-    char *line = NULL, *text = mem_alloc(textSize);
-    strcpy(text, "\0");
+    char *line = NULL;
 
     while ((lineLen = getline(&line, &buffSize, f)) != -1) {
-        textLen += lineLen;
-        // TODO : Use alloc lib here
-        if (textLen >= textSize) {
-            textSize += BUFF_SIZE * (int)(1 + (textLen - textSize) / BUFF_SIZE); 
-            text = mem_realloc(text, textSize);
-        }
-        strcat(text, line);
+        alloc_append(block, line, lineLen * sizeof(char));
         free(line);
         line = NULL;
         buffSize = 0;
     }
 
     fclose(f);
+    char *text = (char*) alloc_getBlock(block);
+    free(block);
 
     return text;
 }

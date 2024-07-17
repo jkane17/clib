@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "alloc.h"
 #include "mem.h"
 
 #define BUFF_SIZE 1024
