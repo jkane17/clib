@@ -1,7 +1,7 @@
 
 /*
     File Type   : C Source
-    Description : Memory Allocator
+    Description : Memory Allocator.
 */
 
 #include "alloc.h"
@@ -37,12 +37,7 @@ static size_t _convertSize(AllocStrategy strat, size_t size) {
 }
 
 void alloc_append(AllocBlock *b, void *item, size_t itemSize) {
-    if (b == NULL || item == NULL || itemSize == 0) return;
-    size_t newSize = b->used + itemSize;
-    if (newSize > b->total) alloc_resize(b, newSize);
-    memcpy(b->used + (char*)b->block, item, itemSize);
-    b->used  += itemSize;
-    b->avail -= itemSize;
+    alloc_insert(b, item, b->used / itemSize, itemSize);
 } 
 
 void alloc_free(AllocBlock *b) { free(b->block); free(b); }
@@ -63,16 +58,26 @@ size_t alloc_getUsed(AllocBlock *b) { return b ? b->used : 0; }
 void *alloc_index(AllocBlock *b, size_t idx, size_t itemSize) {
     size_t byteOffset = idx * itemSize;
     if (b == NULL || byteOffset >= b->total || itemSize == 0) return NULL;
-    return byteOffset + (char *)b->block;
+    return byteOffset + (char*)b->block;
+}
+
+void alloc_insert(AllocBlock *b, void *item, size_t idx, size_t itemSize) {
+    size_t byteOffset = idx * itemSize;
+    if (b == NULL || item == NULL || byteOffset > b->used || itemSize == 0) return;
+    size_t newSize = b->used + itemSize, total = b->total;
+    if (newSize > total) alloc_resize(b, newSize);
+    if (byteOffset < total) mem_shift(b->block, b->total / itemSize, itemSize, idx, 1);
+    memcpy(byteOffset + (char*)b->block, item, itemSize);
+    b->used += itemSize;
+    b->avail -= itemSize;
 }
 
 AllocBlock *alloc_new(size_t size, AllocStrategy strat) {
-    AllocBlock *b = (AllocBlock *) mem_alloc(sizeof(AllocBlock));
-    assert(b && "Failed to create new AllocBlock");
+    AllocBlock *b = (AllocBlock*)mem_alloc(sizeof(AllocBlock));
     b->block = mem_alloc(size);
     b->avail = size;
-    b->used  = 0;
-    b->total  = size;
+    b->used = 0;
+    b->total = size;
     alloc_setStrat(b, strat);
     return b;
 }

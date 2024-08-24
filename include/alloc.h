@@ -1,7 +1,7 @@
 
 /*
     File Type   : C Header
-    Description : Memory Allocator
+    Description : Memory Allocator.
 */
 
 #ifndef ALLOC_H_INCLUDED
@@ -90,6 +90,16 @@ size_t alloc_getUsed(AllocBlock *b);
  * @return Pointer to item at given index.
  */
 void *alloc_index(AllocBlock *b, size_t idx, size_t itemSize);
+
+/**
+ * @brief Insert an item into the AllocBlock at the given index.
+ * 
+ * @param b AllocBlock object.
+ * @param item Pointer to item (item is copied).
+ * @param idx Index to insert at.
+ * @param itemSize Size of an single item (bytes).
+ */
+void alloc_insert(AllocBlock *b, void *item, size_t idx, size_t itemSize);
 
 /**
  * @brief Create a new AllocBlock.

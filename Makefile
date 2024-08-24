@@ -81,6 +81,9 @@ $(PATH_OBJECTS):
 $(PATH_RESULTS):
 	$(MKDIR) $(PATH_RESULTS)
 	@echo $(BREAK)
+$(PATH_EXECUTABLES):
+	$(MKDIR) $(PATH_EXECUTABLES)
+	@echo $(BREAK)
 
 clean:
 	@echo "CLEANING..."
