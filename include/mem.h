@@ -1,45 +1,42 @@
 
 /*
-    File Type   : C Header
-    Description : Memory Operations
+    File        : mem.h
+    Description : Dynamic memory management operations.
 */
 
 #ifndef MEM_H_INCLUDED
 #define MEM_H_INCLUDED
 
-#include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
-
-#include "math.h"
 
 /**
- * @brief Allocate [size] bytes of memory.
- * 
- * @param size Number of bytes to allocate.
- * @return Pointer to allocated memory address (if successful).
+ * @brief Allocates a block of memory of the given size.
+ *
+ * @param size The number of bytes to allocate. If 0, NULL is returned.
+ * @return A pointer to the allocated memory block, or NULL if `size` is 0.
+ *         Exits the program if allocation fails.
  */
 void *mem_alloc(size_t size);
 
 /**
- * @brief Re-allocate the previously allocated block in [p], making the new block [size] bytes long.
- * 
- * @param ptr Pointer to memory address to be reallocated.
- * @param size Number of bytes to allocate.
- * @return Pointer to reallocated memory address (if successful).
+ * @brief Allocates memory for an array of elements and initialises them to zero.
+ *
+ * @param num The number of elements to allocate. If 0, NULL is returned.
+ * @param size The size of each element in bytes. If 0, NULL is returned.
+ * @return A pointer to the allocated memory block, or NULL if `num` or `size` is 0.
+ *         Exits the program if allocation fails.
+ */
+void *mem_calloc(size_t num, size_t size);
+
+/**
+ * @brief Resizes a previously allocated memory block.
+ *
+ * @param p A pointer to the previously allocated memory block, or NULL.
+ * @param size The new size in bytes. If 0, the memory is freed.
+ * @return A pointer to the reallocated memory block, or NULL if size is 0.
+ *         Exits the program if reallocation fails (when size is non-zero).
  */
 void *mem_realloc(void *p, size_t size);
 
-/**
- * @brief Shift items of an array n spaces to the left (-ve n) or right (+ve n).
- * 
- * @param arr Pointer to array
- * @param len Total number of items in array
- * @param itemSize Size (in bytes) of each individual item in array
- * @param idx Index at which the shift operation occurs
- * @param n Number of places to shift left (-ve n) or right (+ve n)
-*/
-void mem_shift(void *arr, size_t len, size_t itemSize, size_t idx, int n);
-
-#endif
+#endif // MEM_H_INCLUDED

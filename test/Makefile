@@ -12,16 +12,19 @@ FILES = $(shell find $(PATH_TEST) -type f -name *$(PREFIX)*.c)
 RESULTS = $(patsubst $(PATH_TEST)%.c,$(_PATH_RESULTS)%.txt,$(FILES))
 
 _INCLUDE_FLAGS = $(INCLUDE_FLAGS) -I$(PATH_UNITY)
+DEFS = -DPATH_ROOT=\"$(PATH_ROOT)\"
 
-PASSED = `GREP_COLOR="1;32" find $(_PATH_RESULTS) -type f -name "*.txt" -exec grep -sh --color=always "PASS" {} +`
-FAIL = `GREP_COLOR="1;31" find $(_PATH_RESULTS) -type f -name "*.txt" -exec grep -sh --color=always "FAIL" {} +`
-IGNORE = `GREP_COLOR="1;33" find $(_PATH_RESULTS) -type f -name "*.txt" -exec grep -sh --color=always "IGNORE" {} +`
+PASSED = `GREP_COLORS="mt=1;32" find $(_PATH_RESULTS) -type f -name "*.txt" -exec grep -sh --color=always "PASS" {} + | sed 's|.*/||'`
+FAIL = `GREP_COLORS="mt=1;31" find $(_PATH_RESULTS) -type f -name "*.txt" -exec grep -sh --color=always "FAIL" {} + | sed 's|.*/||'`
+SEG_FAULT = `GREP_COLORS="mt=1;31" find $(_PATH_RESULTS) -type f -name "*.txt" -exec grep -sEH --color=always 'Segmentation fault|Aborted' {} + | sed 's|.*/||'`
+IGNORE = `GREP_COLORS="mt=1;33" find $(_PATH_RESULTS) -type f -name "*.txt" -exec grep -sh --color=always "IGNORE" {} + | sed 's|.*/||'`
 
 run: $(_PATH_RESULTS) $(_PATH_OBJECTS) $(_PATH_EXECUTABLES) $(RESULTS)
 	@echo "-----------------------\nIGNORES:\n-----------------------"
 	@echo "$(IGNORE)"
 	@echo "-----------------------\nFAILURES:\n-----------------------"
 	@echo "$(FAIL)"
+	@echo "$(SEG_FAULT)"
 	@echo "-----------------------\nPASSED:\n-----------------------"
 	@echo "$(PASSED)"
 	@echo "\nDONE"
@@ -43,7 +46,7 @@ $(_PATH_EXECUTABLES):
 # Execute unit tests
 $(_PATH_RESULTS)%.txt: $(_PATH_EXECUTABLES)%.$(TARGET_EXTENSION)
 	@echo "EXECUTING TEST : $<"
-	-./$< > $@ 2>&1
+	-$< > $@ 2>&1
 	@echo $(BREAK)
 
 # Build test files
@@ -55,7 +58,7 @@ $(_PATH_EXECUTABLES)%.$(TARGET_EXTENSION): $(_PATH_OBJECTS)%.o $(PATH_OBJECTS)un
 # Build object files
 $(_PATH_OBJECTS)%.o: $(PATH_TEST)%.c
 	@echo "BUILDING OBJECT FILE : $@"
-	$(CC) -c $(DEBUG_FLAGS) $(_INCLUDE_FLAGS) $< -o $@
+	$(CC) -c $(DEBUG_FLAGS) $(_INCLUDE_FLAGS) $(DEFS) $< -o $@
 	@echo $(BREAK)
 
 # Build unity library object files

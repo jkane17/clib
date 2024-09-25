@@ -1,27 +1,28 @@
 
 /*
-    File Type   : C Header
-    Description : Mathematical Operations
+    File        : math.h
+    Description : Mathematical utility functions and macros.
 */
 
 #ifndef MATH_H_INCLUDED
 #define MATH_H_INCLUDED
 
 /**
- * @brief Compute the absolute value of x.
- * 
- * @param x Numeric value.
- * @return Absolute value.
- */
-#define math_abs(x) (x < 0 ? -1 * x : x)
-
-/**
- * @brief Compute the minimum value between x and y.
+ * @brief Compute the maximum value between `x` and `y`.
  * 
  * @param x Numeric value.
  * @param y Numeric value.
- * @return Minimum value.
+ * @return Maximum value of `x` and `y`.
  */
-#define math_min(x, y) (x < y ? x : y)
+#define math_max(x, y) ((x) > (y) ? (x) : (y))
 
-#endif
+/**
+ * @brief Compute the minimum value between `x` and `y`.
+ * 
+ * @param x Numeric value.
+ * @param y Numeric value.
+ * @return Minimum value of `x` and `y`.
+ */
+#define math_min(x, y) ((x) < (y) ? (x) : (y))
+
+#endif // MATH_H_INCLUDED

@@ -1,34 +1,37 @@
 
 /*
-    File Type   : C Source
-    Description : Memory Operations
+    File        : mem.c
+    Description : Dynamic memory management operations.
 */
 
 #include "mem.h"
 
 void *mem_alloc(size_t size) {
+    if (size == 0) return NULL;
     void *p = malloc(size);
-    assert(p && "Memory allocation failed");
+    if (p == NULL) {
+        fprintf(stderr, "Error: Memory allocation of %zu bytes failed.\n", size);
+        exit(EXIT_FAILURE);
+    }
+    return p;
+}
+
+void *mem_calloc(size_t num, size_t size) {
+    if (num == 0 || size == 0) return NULL;
+    void *p = calloc(num, size);
+    if (p == NULL) {
+        fprintf(stderr, "Error: Memory allocation for %zu elements of %zu bytes each failed.\n", num, size);
+        exit(EXIT_FAILURE);
+    }
     return p;
 }
 
 void *mem_realloc(void *p, size_t size) {
-    void *newp = realloc(p, size);
-    if(size) assert(newp && "Memory reallocation failed");
-    return newp;
-}
-
-void mem_shift(void *arr, size_t len, size_t itemSize, size_t idx, int n) {
-    if (
-        n == 0 || 
-        idx >= len ||
-        (n > 0 && (size_t)n > (len - idx) - 1) || 
-        (n < 0 && idx < (size_t)math_abs(n)) 
-    ) return;
-    size_t byteOffset = idx * itemSize;
-    memmove(
-        (char *) arr + byteOffset + n * itemSize, 
-        (char *) arr + byteOffset, 
-        itemSize * (len - idx) - (math_abs(n) - 1)
-    );
+    if (size == 0) { if (p != NULL) free(p); return NULL; }
+    void *np = realloc(p, size);
+    if (np == NULL) {
+        fprintf(stderr, "Error: Memory reallocation of %zu bytes failed.\n", size);
+        exit(EXIT_FAILURE);
+    }
+    return np;
 }

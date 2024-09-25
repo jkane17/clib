@@ -6,11 +6,13 @@ TARGET_EXTENSION=out
 .PHONY: build test install uninstall clean
 
 # Paths
-PATH_INCLUDE = include/
-PATH_SRC = src/
-PATH_TEST = test/
+PATH_ROOT = $(shell pwd)/
 
-PATH_BUILD = build/
+PATH_INCLUDE = $(PATH_ROOT)include/
+PATH_SRC = $(PATH_ROOT)src/
+PATH_TEST = $(PATH_ROOT)test/
+
+PATH_BUILD = $(PATH_ROOT)build/
 PATH_OBJECTS = $(PATH_BUILD)objs/
 PATH_RESULTS = $(PATH_BUILD)results/
 PATH_EXECUTABLES = $(PATH_BUILD)exec/
@@ -40,6 +42,7 @@ BREAK = "\n--------------------------------------------------\n"
 
 export MKDIR
 export TARGET_EXTENSION
+export PATH_ROOT
 export PATH_TEST
 export PATH_OBJECTS
 export PATH_RESULTS
