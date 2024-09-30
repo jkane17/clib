@@ -16,12 +16,12 @@ void tearDown(void) {}
 #define checkValues(d, exp, n) { \
     TEST_ASSERT_EQUAL_INT(n, darr_len(d)); \
     if (n > 0) \
-        TEST_ASSERT_FALSE(darr_isEmpty(darr)); \
+        TEST_ASSERT_FALSE(darr_isEmpty(d)); \
     else \
-        TEST_ASSERT_TRUE(darr_isEmpty(darr)); \
+        TEST_ASSERT_TRUE(darr_isEmpty(d)); \
     TEST_ASSERT_EQUAL_INT(exp[0], *(int*)darr_first(d)); \
     TEST_ASSERT_EQUAL_INT(exp[n - 1], *(int*)darr_last(d)); \
-    TEST_ASSERT_EQUAL_INT_ARRAY(exp, (int*)darr_index(darr, 0), n); \
+    TEST_ASSERT_EQUAL_INT_ARRAY(exp, (int*)darr_index(d, 0), n); \
 }
 
 void test_darr_append(void) {
